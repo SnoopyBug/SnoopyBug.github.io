@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;🦄&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>Y86处理器模拟&nbsp;|&nbsp;SnoopyBug</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="Y86处理器模拟">
+  
+  
+    <meta property="og:image" content="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;💡&lt;/text&gt;&lt;/svg&gt;">
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;🦄&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About Me</span>
+        </div>
+      </a>
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+      <div class="Header__Icon">
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;💡&lt;/text&gt;&lt;/svg&gt;"></span>
+      </div>
+    
+    <h1 class="Header__Title">Y86处理器模拟</h1>
+    
+      <div class="DateTagBar">
+        
+          <span class="DateTagBar__Item DateTagBar__Date">Posted on Thu, Mar 31, 2022</span>
+        
+        
+      </div>
+    
+  </header>
+  <article id="https://www.notion.so/23962e26a1cf80bf8f5eea96adbce9f4" class="PageRoot"><h2 id="https://www.notion.so/23962e26a1cf80d08a9dd6be376cd49c" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/23962e26a1cf80d08a9dd6be376cd49c"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">1 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">思路</strong></span></span></h2><div id="https://www.notion.so/23962e26a1cf809eb23fcc562ac9a47b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">使用python模拟Y86处理器，实现从1到100的累加，并将结果保存到寄存器：</span></span></p></div><pre id="https://www.notion.so/23962e26a1cf806f9e12ccce16999b9e" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span>汇编：
+irmovq   0, %rbx
+irmovq   1, %rax
+irmovq   101, %rcx
+irmovq   1, %r8
+irmovq   [address], %rdi
+addq     %rbx, %rax
+addq     %rax, %r8
+rrmovq   %rax, %rdx
+subq     %rdx, %rcx
+jle      loc
+rmmovq   %rbx, [%rdi]
+halt
+
+指令：
+0   30F30000000000000000
+1   30F00100000000000000
+2   30F16500000000000000
+3   30F80100000000000000
+4   30F70401000000000000
+5   6030
+6   6008
+7   2002
+8   6121
+9   720500000000000000
+10  40370000000000000000
+11  00</span></span></span></code></pre><h2 id="https://www.notion.so/23962e26a1cf80c29ba6cccb7218e531" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/23962e26a1cf80c29ba6cccb7218e531"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">2 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">代码解析</strong></span></span></h2><pre id="https://www.notion.so/23962e26a1cf80f7836fdf71ef95d163" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span><span class="token comment"># 初始化</span>
+Dmem <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">*</span><span class="token number">1024</span>
+Imem <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">''</span><span class="token punctuation">]</span><span class="token operator">*</span><span class="token number">1024</span>
+reg <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">*</span><span class="token number">15</span>
+esp <span class="token operator">=</span> <span class="token number">0</span>
+CF <span class="token operator">=</span> ZF <span class="token operator">=</span> SF <span class="token operator">=</span> OF <span class="token operator">=</span> <span class="token number">0</span>
+
+<span class="token comment"># 读入指令到存储器，需要判断指令类型来读取相应长度的机器码</span>
+<span class="token keyword">def</span> <span class="token function">LoadInstr</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">global</span> Imem
+    f <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">)</span>
+    line <span class="token operator">=</span> f<span class="token punctuation">.</span>readlines<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+    n <span class="token operator">=</span> l <span class="token operator">=</span> <span class="token number">0</span>
+    <span class="token keyword">while</span> <span class="token builtin">len</span><span class="token punctuation">(</span>line<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">:</span>
+        k <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>line<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> k <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">2</span>
+        <span class="token keyword">elif</span> k <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">2</span>
+        <span class="token keyword">elif</span> k <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">4</span>
+        <span class="token keyword">elif</span> k <span class="token operator">==</span> <span class="token number">3</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">20</span>
+        <span class="token keyword">elif</span> k <span class="token operator">==</span> <span class="token number">4</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">20</span>
+        <span class="token keyword">elif</span> k <span class="token operator">==</span> <span class="token number">5</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">20</span>
+        <span class="token keyword">elif</span> k <span class="token operator">==</span> <span class="token number">6</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">4</span>
+        <span class="token keyword">elif</span> k <span class="token operator">==</span> <span class="token number">7</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">18</span>
+        <span class="token keyword">elif</span> k <span class="token operator">==</span> <span class="token number">8</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">18</span>
+        <span class="token keyword">elif</span> k <span class="token operator">==</span> <span class="token number">9</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">2</span>
+        <span class="token keyword">elif</span> k <span class="token operator">==</span> <span class="token number">10</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">4</span>
+        <span class="token keyword">elif</span> k <span class="token operator">==</span> <span class="token number">11</span><span class="token punctuation">:</span>
+            l <span class="token operator">=</span> <span class="token number">4</span>
+        Imem<span class="token punctuation">[</span>n<span class="token punctuation">]</span> <span class="token operator">=</span> line<span class="token punctuation">[</span><span class="token punctuation">:</span>l<span class="token punctuation">]</span>
+        n <span class="token operator">+=</span> <span class="token number">1</span>
+        line <span class="token operator">=</span> line<span class="token punctuation">[</span>l<span class="token punctuation">:</span><span class="token punctuation">]</span>
+
+<span class="token comment"># 由于Y86采用小端存储，tonum函数将该方式表示的16进制数转化为对应的10进制数</span>
+<span class="token keyword">def</span> <span class="token function">tonum</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    l <span class="token operator">=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span>
+    num <span class="token operator">=</span> <span class="token string">''</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>l<span class="token operator">//</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        num <span class="token operator">+=</span> s<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+        s <span class="token operator">=</span> s<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">]</span>
+    <span class="token keyword">return</span> <span class="token builtin">int</span><span class="token punctuation">(</span>num<span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 条件码（本处理器未使用进位标志），每次运算后更新</span>
+<span class="token keyword">def</span> <span class="token function">concode</span><span class="token punctuation">(</span>num<span class="token punctuation">,</span> a<span class="token punctuation">,</span> b<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">global</span> CF<span class="token punctuation">,</span> ZF<span class="token punctuation">,</span> SF<span class="token punctuation">,</span> OF
+    ZF <span class="token operator">=</span> num <span class="token operator">==</span> <span class="token number">0</span>
+    SF <span class="token operator">=</span> num <span class="token operator">&lt;</span> <span class="token number">0</span>
+    OF <span class="token operator">=</span> <span class="token punctuation">(</span>a <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token operator">==</span> b <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">and</span> <span class="token punctuation">(</span>num <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token operator">!=</span> a <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 本处理器名为trash</span>
+<span class="token keyword">def</span> <span class="token function">trash</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">global</span> Dmem<span class="token punctuation">,</span> Imem<span class="token punctuation">,</span> reg<span class="token punctuation">,</span> esp<span class="token punctuation">,</span> ZF<span class="token punctuation">,</span> SF<span class="token punctuation">,</span> OF
+    PC <span class="token operator">=</span> <span class="token number">0</span>
+    <span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+        <span class="token comment"># 取指</span>
+        instr <span class="token operator">=</span> Imem<span class="token punctuation">[</span>PC<span class="token punctuation">]</span>
+        PC <span class="token operator">+=</span> <span class="token number">1</span>
+
+        <span class="token comment"># 译码&amp;执行&amp;存储</span>
+        code <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span>
+        func <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> code <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'HALT~'</span><span class="token punctuation">)</span>
+            <span class="token keyword">break</span>
+        <span class="token keyword">elif</span> code <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">:</span>
+            n <span class="token operator">+=</span> <span class="token number">1</span>
+            <span class="token keyword">continue</span>
+        <span class="token keyword">elif</span> code <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">:</span>
+            <span class="token keyword">if</span> func <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">:</span>
+                reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">1</span> <span class="token keyword">and</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>SF <span class="token operator">^</span> OF<span class="token punctuation">)</span> <span class="token operator">|</span> ZF<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">2</span> <span class="token keyword">and</span> <span class="token punctuation">(</span>SF <span class="token operator">^</span> OF<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">3</span> <span class="token keyword">and</span> <span class="token punctuation">(</span>ZF<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">4</span> <span class="token keyword">and</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token operator">~</span>ZF<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">5</span> <span class="token keyword">and</span> <span class="token punctuation">(</span><span class="token operator">~</span><span class="token punctuation">(</span>SF <span class="token operator">^</span> OF<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">6</span> <span class="token keyword">and</span> <span class="token punctuation">(</span><span class="token operator">~</span><span class="token punctuation">(</span>SF <span class="token operator">^</span> OF<span class="token punctuation">)</span> <span class="token operator">&amp;</span> <span class="token punctuation">(</span><span class="token operator">~</span>ZF<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token keyword">elif</span> code <span class="token operator">==</span> <span class="token number">3</span><span class="token punctuation">:</span>
+            reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">:</span><span class="token number">20</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token keyword">elif</span> code <span class="token operator">==</span> <span class="token number">4</span><span class="token punctuation">:</span>
+            Dmem<span class="token punctuation">[</span>reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">+</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">:</span><span class="token number">20</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'r->m: %d'</span> <span class="token operator">%</span><span class="token punctuation">(</span>Dmem<span class="token punctuation">[</span>reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">+</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">:</span><span class="token number">20</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">elif</span> code <span class="token operator">==</span> <span class="token number">5</span><span class="token punctuation">:</span>
+            reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> Dmem<span class="token punctuation">[</span>reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">+</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">:</span><span class="token number">20</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token keyword">elif</span> code <span class="token operator">==</span> <span class="token number">6</span><span class="token punctuation">:</span>
+            rA <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span>
+            rB <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span>
+            a <span class="token operator">=</span> reg<span class="token punctuation">[</span>rA<span class="token punctuation">]</span>
+            b <span class="token operator">=</span> reg<span class="token punctuation">[</span>rB<span class="token punctuation">]</span>
+            <span class="token keyword">if</span> func <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">:</span>
+                reg<span class="token punctuation">[</span>rA<span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span>rA<span class="token punctuation">]</span> <span class="token operator">+</span> reg<span class="token punctuation">[</span>rB<span class="token punctuation">]</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">:</span>
+                reg<span class="token punctuation">[</span>rA<span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span>rA<span class="token punctuation">]</span> <span class="token operator">-</span> reg<span class="token punctuation">[</span>rB<span class="token punctuation">]</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">:</span>
+                reg<span class="token punctuation">[</span>rA<span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span>rA<span class="token punctuation">]</span> <span class="token operator">&amp;</span> reg<span class="token punctuation">[</span>rB<span class="token punctuation">]</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">3</span><span class="token punctuation">:</span>
+                reg<span class="token punctuation">[</span>rA<span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span>rA<span class="token punctuation">]</span> <span class="token operator">^</span> reg<span class="token punctuation">[</span>rB<span class="token punctuation">]</span>
+            concode<span class="token punctuation">(</span>reg<span class="token punctuation">[</span>rA<span class="token punctuation">]</span><span class="token punctuation">,</span> a<span class="token punctuation">,</span> b<span class="token punctuation">)</span>
+        <span class="token keyword">elif</span> code <span class="token operator">==</span> <span class="token number">7</span><span class="token punctuation">:</span>
+            <span class="token keyword">if</span> func <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">:</span>
+                PC <span class="token operator">=</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token number">18</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">1</span> <span class="token keyword">and</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>SF <span class="token operator">^</span> OF<span class="token punctuation">)</span> <span class="token operator">|</span> ZF<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                PC <span class="token operator">=</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token number">18</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">2</span> <span class="token keyword">and</span> <span class="token punctuation">(</span>SF <span class="token operator">^</span> OF<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                PC <span class="token operator">=</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token number">18</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">3</span> <span class="token keyword">and</span> <span class="token punctuation">(</span>ZF<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                PC <span class="token operator">=</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token number">18</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">4</span> <span class="token keyword">and</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token operator">~</span>ZF<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                PC <span class="token operator">=</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token number">18</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">5</span> <span class="token keyword">and</span> <span class="token punctuation">(</span><span class="token operator">~</span><span class="token punctuation">(</span>SF <span class="token operator">^</span> OF<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                PC <span class="token operator">=</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token number">18</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            <span class="token keyword">elif</span> func <span class="token operator">==</span> <span class="token number">6</span> <span class="token keyword">and</span> <span class="token punctuation">(</span><span class="token operator">~</span><span class="token punctuation">(</span>SF <span class="token operator">^</span> OF<span class="token punctuation">)</span> <span class="token operator">&amp;</span> <span class="token punctuation">(</span><span class="token operator">~</span>ZF<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                PC <span class="token operator">=</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token number">18</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token keyword">elif</span> code <span class="token operator">==</span> <span class="token number">8</span><span class="token punctuation">:</span>
+            PC <span class="token operator">=</span> tonum<span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token number">18</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token keyword">elif</span> code <span class="token operator">==</span> <span class="token number">9</span><span class="token punctuation">:</span>
+            PC <span class="token operator">=</span> Dmem<span class="token punctuation">[</span>esp<span class="token punctuation">]</span>
+            esp <span class="token operator">+=</span> <span class="token number">1</span>
+        <span class="token keyword">elif</span> code <span class="token operator">==</span> <span class="token number">10</span><span class="token punctuation">:</span>
+            esp <span class="token operator">+=</span> <span class="token number">1</span>
+            Dmem<span class="token punctuation">[</span>esp<span class="token punctuation">]</span> <span class="token operator">=</span> reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+        <span class="token keyword">elif</span> code <span class="token operator">==</span> <span class="token number">11</span><span class="token punctuation">:</span>
+            reg<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>instr<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> Dmem<span class="token punctuation">[</span>esp<span class="token punctuation">]</span>
+            esp <span class="token operator">-=</span> <span class="token number">1</span>
+
+<span class="token comment"># RUN（Instr.trash是下面“指令”部分对应的文件）</span>
+LoadInstr<span class="token punctuation">(</span><span class="token string">'Instr.trash'</span><span class="token punctuation">)</span>
+trash<span class="token punctuation">(</span><span class="token punctuation">)</span></span></span></span></code></pre><h2 id="https://www.notion.so/23962e26a1cf80998117e32c90282bb1" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/23962e26a1cf80998117e32c90282bb1"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">3 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">指令</strong></span></span></h2><pre id="https://www.notion.so/23962e26a1cf806f9eb6e2b3ba98b321" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span>30F3000000000000000030F0010000000000000030F1650000000000000030F8010000000000000030F7040100000000000060306008200261217205000000000000004037000000000000000000</span></span></span></code></pre><h2 id="https://www.notion.so/23962e26a1cf801097becf52adaa6530" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/23962e26a1cf801097becf52adaa6530"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">4 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">结果</strong></span></span></h2><pre id="https://www.notion.so/23962e26a1cf80829b3bea3a2a3f3c45" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span>r-&gt;m: 5050
+HALT~</span></span></span></code></pre></article>
+  <footer class="Footer">
+  <div>&copy; SnoopyBug 2024</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+
+</body>
+
+</html>

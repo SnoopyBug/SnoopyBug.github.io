@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;🦄&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>Jetson AGX Xavier 刷机指南&nbsp;|&nbsp;SnoopyBug</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="Jetson AGX Xavier 刷机指南">
+  
+  
+    <meta property="og:image" content="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;💡&lt;/text&gt;&lt;/svg&gt;">
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;🦄&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About Me</span>
+        </div>
+      </a>
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+      <div class="Header__Icon">
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;💡&lt;/text&gt;&lt;/svg&gt;"></span>
+      </div>
+    
+    <h1 class="Header__Title">Jetson AGX Xavier 刷机指南</h1>
+    
+      <div class="DateTagBar">
+        
+          <span class="DateTagBar__Item DateTagBar__Date">Posted on Tue, Nov 7, 2023</span>
+        
+        
+      </div>
+    
+  </header>
+  <article id="https://www.notion.so/23962e26a1cf8069aff2df6f62d9b128" class="PageRoot"><h2 id="https://www.notion.so/23962e26a1cf8014bbcfe92755ac8288" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/23962e26a1cf8014bbcfe92755ac8288"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">1 准备</span></span></h2><ol class="NumberedListWrapper"><li id="https://www.notion.so/23962e26a1cf80eca498da35c559cb66" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">Ubuntu主机（虚拟机也行），预留50GB以上空间，提前安装Nvidia SDK Manager</span></span><pre id="https://www.notion.so/23962e26a1cf8013be38cc2058ba36ce" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span><span class="token comment"># 先在 https://developer.nvidia.com/sdk-manager 下载安装包（以sdkmanager_2.0.0-11402_amd64.deb为例）</span>
+$ sudo apt install <span class="token punctuation">.</span><span class="token operator">/</span>sdkmanager_2<span class="token punctuation">.</span>0<span class="token punctuation">.</span>0-11402_amd64<span class="token punctuation">.</span>deb</span></span></span></code></pre></li><li id="https://www.notion.so/23962e26a1cf804aaae1fd6b81d32439" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">打开Jetson电源，长按恢复按钮后长按电源按钮，电源灯亮，准备刷机。Jetson连接键盘、鼠标、显示器（后续系统配置需要）</span></span></li><li id="https://www.notion.so/23962e26a1cf807eadc1fef8eeb74916" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">连接主机与Jetson（可用原装USB-TypeC数据线，Jetson连电源指示灯旁TypeC口）</span></span></li></ol><h2 id="https://www.notion.so/23962e26a1cf80029b34cc2010516324" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/23962e26a1cf80029b34cc2010516324"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">2 刷机</span></span></h2><ol class="NumberedListWrapper"><li id="https://www.notion.so/23962e26a1cf80b287b8eb34db1be5d1" class="NumberedList" value="1"><span class="SemanticStringArray"><span class="SemanticString">主机打开SDK Manager，登陆Nvidia账号，“LOGIN”登入</span></span><pre id="https://www.notion.so/23962e26a1cf807884f1f7a1dcc6858a" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span>$ sdkmanager</span></span></span></code></pre></li><li id="https://www.notion.so/23962e26a1cf801eabbcf040d429606b" class="NumberedList" value="2"><span class="SemanticStringArray"><span class="SemanticString">选择相应资源（Host Machine资源没有需求可以不选），“CONTINUE”。</span></span><div id="https://www.notion.so/23962e26a1cf80028397c3f023140591" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">这里可以看到Jetson显示已连接状态，不然就再次长按恢复与电源按钮。</span></span></p></div><div id="https://www.notion.so/23962e26a1cf801e876bcaf83f04e9e1" class="Image Image--PageWidth"><figure><a href="https://pic4.zhimg.com/v2-ffa26297f1578391412adf04ba55f12d_1440w.jpg"><img src="https://pic4.zhimg.com/v2-ffa26297f1578391412adf04ba55f12d_1440w.jpg" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div></li><li id="https://www.notion.so/23962e26a1cf80d5bd2edcafd4ff43e7" class="NumberedList" value="3"><span class="SemanticStringArray"><span class="SemanticString">勾选所需资源，设置资源下载位置，勾选同意，“CONTINUE”</span></span><div id="https://www.notion.so/23962e26a1cf8017883ed75a9de2cc92" class="Image Image--PageWidth"><figure><a href="https://pica.zhimg.com/v2-dc55996bcc35df24a9f4d2ba4ed70054_1440w.jpg"><img src="https://pica.zhimg.com/v2-dc55996bcc35df24a9f4d2ba4ed70054_1440w.jpg" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div></li><li id="https://www.notion.so/23962e26a1cf8007b2eedef901962595" class="NumberedList" value="4"><span class="SemanticStringArray"><span class="SemanticString">系统与资源安装</span></span><div id="https://www.notion.so/23962e26a1cf808c8147dd44ff438c92" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">先等待资源下载完毕。下载完后，会出现以下窗口。</span></span></p></div><div id="https://www.notion.so/23962e26a1cf80eaa279ccad085199fc" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">如果第一次拿到Jetson或者需要重装系统，设备选择Jetson AGX Xavier，选择自动安装，IP一般用默认的就行，设置好Jetson上系统的用户名和密码，“TRY”；</span></span></p></div><div id="https://www.notion.so/23962e26a1cf80a7a744c9882d2dc68d" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">无需重装系统的话直接“SKIP”。</span></span></p></div><div id="https://www.notion.so/23962e26a1cf80eaa59fde6ed54b2bf3" class="Image Image--PageWidth"><figure><a href="https://pica.zhimg.com/v2-dd987f749b864263acd22e375dc3f244_1440w.jpg"><img src="https://pica.zhimg.com/v2-dd987f749b864263acd22e375dc3f244_1440w.jpg" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/23962e26a1cf80f79322cda18221cd5e" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">系统刷完之后，会出现准备安装资源的窗口</span></span></p></div><div id="https://www.notion.so/23962e26a1cf806d80fde9f54eaa255a" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">先别急着安装！！！</strong></span></span></p></div><div id="https://www.notion.so/23962e26a1cf805cb0f6fd888883646b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">刚装完系统的话，先在Jetson上完成系统配置，然后换源（不换源大概率是不行的）。这里贴出Ubuntu20.04-arm64的清华源，其他版本的自行搜索。跳过重装系统的也检查一下Jetson上的源是否正确。</span></span></p></div><pre id="https://www.notion.so/23962e26a1cf80628a94e4ba0d89ed78" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span>$ sudo vim <span class="token operator">/</span>etc/apt/sources<span class="token punctuation">.</span>list
+
+deb https:<span class="token operator">/</span><span class="token operator">/</span>mirrors<span class="token punctuation">.</span>tuna<span class="token punctuation">.</span>tsinghua<span class="token punctuation">.</span>edu<span class="token punctuation">.</span>cn/ubuntu-ports/ focal main restricted universe multiverse
+deb-src https:<span class="token operator">/</span><span class="token operator">/</span>mirrors<span class="token punctuation">.</span>tuna<span class="token punctuation">.</span>tsinghua<span class="token punctuation">.</span>edu<span class="token punctuation">.</span>cn/ubuntu-ports/ focal main restricted universe multiverse
+deb https:<span class="token operator">/</span><span class="token operator">/</span>mirrors<span class="token punctuation">.</span>tuna<span class="token punctuation">.</span>tsinghua<span class="token punctuation">.</span>edu<span class="token punctuation">.</span>cn/ubuntu-ports/ focal-updates main restricted universe multiverse
+deb-src https:<span class="token operator">/</span><span class="token operator">/</span>mirrors<span class="token punctuation">.</span>tuna<span class="token punctuation">.</span>tsinghua<span class="token punctuation">.</span>edu<span class="token punctuation">.</span>cn/ubuntu-ports/ focal-updates main restricted universe multiverse
+deb https:<span class="token operator">/</span><span class="token operator">/</span>mirrors<span class="token punctuation">.</span>tuna<span class="token punctuation">.</span>tsinghua<span class="token punctuation">.</span>edu<span class="token punctuation">.</span>cn/ubuntu-ports/ focal-backports main restricted universe multiverse
+deb-src https:<span class="token operator">/</span><span class="token operator">/</span>mirrors<span class="token punctuation">.</span>tuna<span class="token punctuation">.</span>tsinghua<span class="token punctuation">.</span>edu<span class="token punctuation">.</span>cn/ubuntu-ports/ focal-backports main restricted universe multiverse
+deb https:<span class="token operator">/</span><span class="token operator">/</span>mirrors<span class="token punctuation">.</span>tuna<span class="token punctuation">.</span>tsinghua<span class="token punctuation">.</span>edu<span class="token punctuation">.</span>cn/ubuntu-ports/ focal-security main restricted universe multiverse
+deb-src https:<span class="token operator">/</span><span class="token operator">/</span>mirrors<span class="token punctuation">.</span>tuna<span class="token punctuation">.</span>tsinghua<span class="token punctuation">.</span>edu<span class="token punctuation">.</span>cn/ubuntu-ports/ focal-security main restricted universe multiverse</span></span></span></code></pre><div id="https://www.notion.so/23962e26a1cf803aa8b1c67ab6269c96" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">p.s. 一定要选择手头机器的对应Ubuntu版本、系统架构的源！</strong></span></span></p></div><div id="https://www.notion.so/23962e26a1cf80afab72e13338a7b51b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">（本人连续在这踩坑，重装了N次）</span></span></p></div><pre id="https://www.notion.so/23962e26a1cf80f6a5abe16f2c618b29" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span><span class="token comment"># 查看操作系统版本、系统架构</span>
+$ uname <span class="token operator">-</span>a
+$ lsb_release <span class="token operator">-</span>a</span></span></span></code></pre><div id="https://www.notion.so/23962e26a1cf808bbbe3c22c9921cab7" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">Jetson操作系统可以正常使用并换源后，接下来装备安装资源，输入已经设置的Jetson系统上的用户名（字母小写）与密码，“INSTALL”</span></span></p></div><div id="https://www.notion.so/23962e26a1cf8002afb0de8ba3911580" class="Image Image--PageWidth"><figure><a href="https://pic3.zhimg.com/v2-68eb3d718d0a7fbe6dc0609ae779b6ba_1440w.jpg"><img src="https://pic3.zhimg.com/v2-68eb3d718d0a7fbe6dc0609ae779b6ba_1440w.jpg" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div></li><li id="https://www.notion.so/23962e26a1cf80428a41eb9ba8f09220" class="NumberedList" value="5"><span class="SemanticStringArray"><span class="SemanticString">等待安装完毕后，刷机结束</span></span><div id="https://www.notion.so/23962e26a1cf802c8e03cdc06f882ef8" class="Image Image--PageWidth"><figure><a href="https://picx.zhimg.com/v2-51f82277f6b6c280bcd52ca55d300c23_1440w.jpg"><img src="https://picx.zhimg.com/v2-51f82277f6b6c280bcd52ca55d300c23_1440w.jpg" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div></li></ol></article>
+  <footer class="Footer">
+  <div>&copy; SnoopyBug 2024</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+
+</body>
+
+</html>
