@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;🦄&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>PyTorch构造数据集&nbsp;|&nbsp;SnoopyBug</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="PyTorch构造数据集">
+  
+  
+    <meta property="og:image" content="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;💡&lt;/text&gt;&lt;/svg&gt;">
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;🦄&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About Me</span>
+        </div>
+      </a>
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+      <div class="Header__Icon">
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;💡&lt;/text&gt;&lt;/svg&gt;"></span>
+      </div>
+    
+    <h1 class="Header__Title">PyTorch构造数据集</h1>
+    
+      <div class="DateTagBar">
+        
+          <span class="DateTagBar__Item DateTagBar__Date">Posted on Tue, Dec 28, 2021</span>
+        
+        
+      </div>
+    
+  </header>
+  <article id="https://www.notion.so/23962e26a1cf80f5942fda5e574b15e2" class="PageRoot"><h2 id="https://www.notion.so/23962e26a1cf8089b7a7eda6c1aef194" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/23962e26a1cf8089b7a7eda6c1aef194"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">1 储存图片路径与标签的文件</strong></span></span></h2><div id="https://www.notion.so/23962e26a1cf80adb3dff292430eeb95" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">以txt文件为例，train.txt和test.txt文件中每行都只有一张图片的路径、对应的标签。test.txt文件某片段如下，每行最后的数字是图片的标签。</span></span></p></div><pre id="https://www.notion.so/23962e26a1cf80b4b664efcca0aa09c9" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span>test/2/hand1_2_top_seg_4_cropped.png 2
+test/2/hand1_2_top_seg_3_cropped_0_9961.png 2
+test/2/hand1_2_top_seg_3_cropped_0_7789.png 2
+test/2/hand2_2_bot_seg_1_cropped.png 2
+test/3/hand2_3_right_seg_1_cropped.png 3
+test/3/hand5_3_bot_seg_2_cropped.png 3</span></span></span></code></pre><div id="https://www.notion.so/23962e26a1cf804087eede8f6b1921e3" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">可以先将图片根据标签储存在不同文件夹，在此基础上，使用python脚本创建这类txt文件。 （</span><span class="SemanticString"><a class="SemanticString__Fragment SemanticString__Fragment--Link" href="https://zhida.zhihu.com/search?content_id=188322262&amp;content_type=Article&amp;match_order=1&amp;q=csv&amp;zhida_source=entity">csv</a></span><span class="SemanticString">等文件亦可，以txt为例）</span></span></p></div><h2 id="https://www.notion.so/23962e26a1cf80049340f9dc357a4918" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/23962e26a1cf80049340f9dc357a4918"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">2 导入所需的库</strong></span></span></h2><pre id="https://www.notion.so/23962e26a1cf8071b142fd60f65c38d8" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span><span class="token keyword">import</span> torch
+<span class="token keyword">import</span> torchvision
+<span class="token keyword">from</span> PIL <span class="token keyword">import</span> Image
+<span class="token keyword">import</span> sys</span></span></span></code></pre><h2 id="https://www.notion.so/23962e26a1cf80d79d11f95aaaf8f8da" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/23962e26a1cf80d79d11f95aaaf8f8da"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">3 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">自定义datasets类</strong></span></span></h2><div id="https://www.notion.so/23962e26a1cf805bb2f8e0bc8a233c4b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">自定义Dataset的子类——datasets类。 要之后要用Dataloader所定义的datasets类的话，这个类得拥有三个必要的函数：init、getitem、len。 注意：这里image_path在txt文件中path前加了&#x27;hand_gesture_data/&#x27;，保证image_path是正确的相对路径。</span></span></p></div><pre id="https://www.notion.so/23962e26a1cf8099aca3dbbb2970297e" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span><span class="token keyword">class</span> <span class="token class-name">gesture_datasets</span><span class="token punctuation">(</span>torch<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>data<span class="token punctuation">.</span>Dataset<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> txt_path<span class="token punctuation">,</span> transform<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        lines <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span>txt_path<span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">)</span>
+        imgs <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token keyword">for</span> line <span class="token keyword">in</span> lines<span class="token punctuation">:</span>
+            line <span class="token operator">=</span> line<span class="token punctuation">.</span>rstrip<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            words <span class="token operator">=</span> line<span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            imgs<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span>words<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token builtin">int</span><span class="token punctuation">(</span>words<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>imgs <span class="token operator">=</span> imgs
+        self<span class="token punctuation">.</span>transform <span class="token operator">=</span> transform
+    <span class="token keyword">def</span> <span class="token function">__getitem__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> index<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        image_path <span class="token operator">=</span> <span class="token string">'hand_gesture_data/'</span> <span class="token operator">+</span> self<span class="token punctuation">.</span>imgs<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+        label <span class="token operator">=</span> self<span class="token punctuation">.</span>imgs<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+        img <span class="token operator">=</span> Image<span class="token punctuation">.</span><span class="token builtin">open</span><span class="token punctuation">(</span>image_path<span class="token punctuation">)</span><span class="token punctuation">.</span>convert<span class="token punctuation">(</span><span class="token string">'RGB'</span><span class="token punctuation">)</span>
+        img <span class="token operator">=</span> self<span class="token punctuation">.</span>transform<span class="token punctuation">(</span>img<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> img<span class="token punctuation">,</span> label
+    <span class="token keyword">def</span> <span class="token function">__len__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token builtin">len</span><span class="token punctuation">(</span>self<span class="token punctuation">.</span>imgs<span class="token punctuation">)</span></span></span></span></code></pre><h2 id="https://www.notion.so/23962e26a1cf808cb958c9db96b58ff8" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/23962e26a1cf808cb958c9db96b58ff8"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">4 定义load_data函数</span></span></h2><div id="https://www.notion.so/23962e26a1cf8017aabfec8f93ae1cbd" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">这里定义了一个函数用于load data，其中将datasets类实例化后，关键在于torch.utils.data.DataLoader的使用。 txt_path同样是相对路径。使用Dataloader时可以考虑多线程（暂不支持Windows）。</span></span></p></div><pre id="https://www.notion.so/23962e26a1cf80e38524cc0cfad8475f" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span><span class="token keyword">def</span> <span class="token function">load_data_gesture</span><span class="token punctuation">(</span>batch_size<span class="token punctuation">,</span> resize<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    transform <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">if</span> resize<span class="token punctuation">:</span>
+        transform<span class="token punctuation">.</span>append<span class="token punctuation">(</span>torchvision<span class="token punctuation">.</span>transforms<span class="token punctuation">.</span>Resize<span class="token punctuation">(</span>size<span class="token operator">=</span>resize<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    transform<span class="token punctuation">.</span>append<span class="token punctuation">(</span>torchvision<span class="token punctuation">.</span>transforms<span class="token punctuation">.</span>ToTensor<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    transform <span class="token operator">=</span> torchvision<span class="token punctuation">.</span>transforms<span class="token punctuation">.</span>Compose<span class="token punctuation">(</span>transform<span class="token punctuation">)</span>
+    gesture_train <span class="token operator">=</span> gesture_datasets<span class="token punctuation">(</span>txt_path<span class="token operator">=</span><span class="token string">'hand_gesture_data/train/train.txt'</span><span class="token punctuation">,</span> transform<span class="token operator">=</span>transform<span class="token punctuation">)</span>
+    gesture_test <span class="token operator">=</span> gesture_datasets<span class="token punctuation">(</span>txt_path<span class="token operator">=</span><span class="token string">'hand_gesture_data/test/test.txt'</span><span class="token punctuation">,</span> transform<span class="token operator">=</span>transform<span class="token punctuation">)</span>
+    num_workers <span class="token operator">=</span> <span class="token number">0</span> <span class="token keyword">if</span> sys<span class="token punctuation">.</span>platform<span class="token punctuation">.</span>startswith<span class="token punctuation">(</span><span class="token string">'win'</span><span class="token punctuation">)</span> <span class="token keyword">else</span> <span class="token number">4</span>
+    train_iter <span class="token operator">=</span> torch<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>data<span class="token punctuation">.</span>DataLoader<span class="token punctuation">(</span>gesture_train<span class="token punctuation">,</span> batch_size<span class="token operator">=</span>batch_size<span class="token punctuation">,</span> shuffle<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> num_workers<span class="token operator">=</span>num_workers<span class="token punctuation">)</span>
+    test_iter <span class="token operator">=</span> torch<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>data<span class="token punctuation">.</span>DataLoader<span class="token punctuation">(</span>gesture_test<span class="token punctuation">,</span> batch_size<span class="token operator">=</span>batch_size<span class="token punctuation">,</span> shuffle<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">,</span> num_workers<span class="token operator">=</span>num_workers<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> train_iter<span class="token punctuation">,</span> test_iter</span></span></span></code></pre><h2 id="https://www.notion.so/23962e26a1cf8067b7d1c134b30914c6" class="ColorfulBlock ColorfulBlock--ColorDefault Heading Heading--2"><a class="Anchor" href="#https://www.notion.so/23962e26a1cf8067b7d1c134b30914c6"><svg width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><span class="SemanticStringArray"><span class="SemanticString">5 </span><span class="SemanticString"><strong class="SemanticString__Fragment SemanticString__Fragment--Bold">调用函数</strong></span></span></h2><pre id="https://www.notion.so/23962e26a1cf8050b1d0c16839fd64db" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span>train_iter<span class="token punctuation">,</span> test_iter <span class="token operator">=</span> load_data_gesture<span class="token punctuation">(</span>batch_size<span class="token operator">=</span><span class="token number">60</span><span class="token punctuation">,</span> resize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">224</span><span class="token punctuation">,</span> <span class="token number">224</span><span class="token punctuation">)</span><span class="token punctuation">)</span></span></span></span></code></pre><div id="https://www.notion.so/23962e26a1cf803a8145f29e1c6d6c64" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"></span></p></div></article>
+  <footer class="Footer">
+  <div>&copy; SnoopyBug 2024</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+
+</body>
+
+</html>
