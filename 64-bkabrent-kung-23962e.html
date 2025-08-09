@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Chrome, Firefox OS and Opera Status Bar Color -->
+<meta name="theme-color" content="#FFFFFF">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css">
+<link rel="stylesheet" type="text/css"
+  href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css">
+<link rel="stylesheet" type="text/css" href="css/SourceSansPro.css">
+<link rel="stylesheet" type="text/css" href="css/theme.css">
+<link rel="stylesheet" type="text/css" href="css/notablog.css">
+<!-- Favicon -->
+
+  <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;🦄&lt;/text&gt;&lt;/svg&gt;">
+
+<style>
+  :root {
+    font-size: 20px;
+  }
+</style>
+  <title>64位并行前缀加法器-BKA（Brent-Kung）&nbsp;|&nbsp;SnoopyBug</title>
+  <meta property="og:type" content="blog">
+  <meta property="og:title" content="64位并行前缀加法器-BKA（Brent-Kung）">
+  
+  
+    <meta property="og:image" content="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;💡&lt;/text&gt;&lt;/svg&gt;">
+  
+  <style>
+    .DateTagBar {
+      margin-top: 1.0rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="Navbar">
+  <a href="index.html">
+    <div class="Navbar__Btn">
+      
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;🦄&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+      
+      <span>Home</span>
+    </div>
+  </a>
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <span class="Navbar__Delim">&centerdot;</span>
+      <a href="about.html">
+        <div class="Navbar__Btn">
+          
+            <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;😀&lt;/text&gt;&lt;/svg&gt;"></span>&nbsp;
+          
+          <span>About Me</span>
+        </div>
+      </a>
+    
+  
+    
+  
+</nav>
+  <header class="Header">
+    
+    <div class="Header__Spacer Header__Spacer--NoCover">
+    </div>
+    
+      <div class="Header__Icon">
+        <span><img class="inline-img-icon" src="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text text-anchor=%22middle%22 dominant-baseline=%22middle%22 x=%2250%22 y=%2255%22 font-size=%2280%22&gt;💡&lt;/text&gt;&lt;/svg&gt;"></span>
+      </div>
+    
+    <h1 class="Header__Title">64位并行前缀加法器-BKA（Brent-Kung）</h1>
+    
+      <div class="DateTagBar">
+        
+          <span class="DateTagBar__Item DateTagBar__Date">Posted on Tue, Mar 28, 2023</span>
+        
+        
+      </div>
+    
+  </header>
+  <article id="https://www.notion.so/23962e26a1cf806d8258f065adfc6bd4" class="PageRoot"><div id="https://www.notion.so/23962e26a1cf805692f8e4f7120d8331" class="Image Image--PageWidth"><figure><a href="https://pic3.zhimg.com/v2-2940dd0a88222dc546d286001ee5bc8e_1440w.jpg"><img src="https://pic3.zhimg.com/v2-2940dd0a88222dc546d286001ee5bc8e_1440w.jpg" style="width:100%"/></a><figcaption><span class="SemanticStringArray"></span></figcaption></figure></div><div id="https://www.notion.so/23962e26a1cf80a484dde0b847d06060" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">对于BK型并行前缀加法器，关键是树形结构的构造。上图中每个黑点表示做一次运算: </span></span></p></div><p id="https://www.notion.so/23962e26a1cf80bfa11ddd15451e57ad" class="Equation" data-latex="\left(g_1, p_1\right) \circ\left(g_2, p_2\right)=\left(g_1+p_1 \cdot g_2, p_1 \cdot p_2\right)"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo fence="true">(</mo><msub><mi>g</mi><mn>1</mn></msub><mo separator="true">,</mo><msub><mi>p</mi><mn>1</mn></msub><mo fence="true">)</mo></mrow><mo>∘</mo><mrow><mo fence="true">(</mo><msub><mi>g</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>p</mi><mn>2</mn></msub><mo fence="true">)</mo></mrow><mo>=</mo><mrow><mo fence="true">(</mo><msub><mi>g</mi><mn>1</mn></msub><mo>+</mo><msub><mi>p</mi><mn>1</mn></msub><mo>⋅</mo><msub><mi>g</mi><mn>2</mn></msub><mo separator="true">,</mo><msub><mi>p</mi><mn>1</mn></msub><mo>⋅</mo><msub><mi>p</mi><mn>2</mn></msub><mo fence="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\left(g_1, p_1\right) \circ\left(g_2, p_2\right)=\left(g_1+p_1 \cdot g_2, p_1 \cdot p_2\right)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">)</span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∘</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">)</span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mord mathdefault">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">)</span></span></span></span></span></span></p><div id="https://www.notion.so/23962e26a1cf8007b1fbe0930eb3c463" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString">首先通过计算p和g，再按照树形结构计算G和P，根据G、P、cin计算每一位的进位信号C，从而得到s与cout。
+组合逻辑较复杂，部分代码能够循环生成，剩余的直接手动生成。源码过长，详见仓库：</span></span></p></div><div id="https://www.notion.so/23962e26a1cf80f884ded263d9d28e9b" class="ColorfulBlock ColorfulBlock--ColorDefault Text"><p class="Text__Content"><span class="SemanticStringArray"><span class="SemanticString"><span class="SemanticString__Fragment SemanticString__Fragment--Unknown">‣</span></span></span></p></div><pre id="https://www.notion.so/23962e26a1cf809eb2bacd0982f147bb" class="Code Code--NoWrap"><code><span class="SemanticStringArray"><span class="SemanticString"><span>// ! 注意g1和g2的位置与引用模块时的输入对应，弄错了就g了，呜呜~
+module black (input g1, p1, g2, p2, output gout, pout);
+    assign gout = g2 | p2 &amp; g1;
+    assign pout = p2 &amp; p1;
+endmodule
+
+
+module BKA64 (
+    input [63:0] a, b,
+    input cin,
+    output [63:0] s,
+    output cout
+    );
+
+genvar i;
+
+// T=0
+wire [63:0] g, p;
+assign g = a &amp; b;
+assign p = a ^ b;
+
+// T=1
+wire [31:0] g_1, p_1;
+generate
+    for (i=0; i&lt;32; i=i+1) begin
+        black black1(
+            .g1(g[i*2]),
+            .p1(p[i*2]),
+            .g2(g[i*2+1]),
+            .p2(p[i*2+1]),
+            .gout(g_1[i]),
+            .pout(p_1[i])
+        );
+    end
+endgenerate
+
+// T=2
+wire [15:0] g_2, p_2;
+generate
+    for (i=0; i&lt;16; i=i+1) begin
+        black black2(
+            .g1(g_1[i*2]),
+            .p1(p_1[i*2]),
+            .g2(g_1[i*2+1]),
+            .p2(p_1[i*2+1]),
+            .gout(g_2[i]),
+            .pout(p_2[i])
+        );
+    end
+endgenerate
+
+// T=3
+......
+
+// T=4
+......
+
+// T=5
+......
+
+// T=6
+wire g_6, p_6;
+black black6(
+    .g1(g_5[0]),
+    .p1(p_5[0]),
+    .g2(g_5[1]),
+    .p2(p_5[1]),
+    .gout(g_6),
+    .pout(p_6)
+);
+
+// T=7
+wire g_7, p_7;
+black black7(
+    .g1(g_5[0]),
+    .p1(p_5[0]),
+    .g2(g_4[2]),
+    .p2(p_4[2]),
+    .gout(g_7),
+    .pout(p_7)
+);
+
+// T=8
+wire [2:0] g_8, p_8;
+black black8_1(
+    .g1(g_4[0]),
+    .p1(p_4[0]),
+    .g2(g_3[2]),
+    .p2(p_3[2]),
+    .gout(g_8[0]),
+    .pout(p_8[0])
+);
+black black8_2(
+    .g1(g_5[0]),
+    .p1(p_5[0]),
+    .g2(g_3[4]),
+    .p2(p_3[4]),
+    .gout(g_8[1]),
+    .pout(p_8[1])
+);
+black black8_3(
+    .g1(g_7),
+    .p1(p_7),
+    .g2(g_3[6]),
+    .p2(p_3[6]),
+    .gout(g_8[2]),
+    .pout(p_8[2])
+);
+
+// T=9
+......
+
+// T=10
+......
+
+// T=11
+......
+
+// P, G
+wire [63:0] P, G;
+generate
+    for (i=0; i&lt;31; i=i+1) begin
+        assign G[2*i+2] = g_11[i];
+        assign P[2*i+2] = p_11[i];
+    end
+    for (i=0; i&lt;15; i=i+1) begin
+        assign G[4*i+5] = g_10[i];
+        assign P[4*i+5] = p_10[i];
+    end
+    for (i=0; i&lt;7; i=i+1) begin
+        assign G[8*i+11] = g_9[i];
+        assign P[8*i+11] = p_9[i];
+    end
+    for (i=0; i&lt;3; i=i+1) begin
+        assign G[16*i+23] = g_8[i];
+        assign P[16*i+23] = p_8[i];
+    end
+    for (i=0; i&lt;1; i=i+1) begin
+        assign G[32*i+47] = g_7;
+        assign P[32*i+47] = p_7;
+    end
+endgenerate
+assign G[0] = g[0];
+assign P[0] = p[0];
+assign G[1] = g_1[0];
+assign P[1] = p_1[0];
+assign G[3] = g_2[0];
+assign P[3] = p_2[0];
+assign G[7] = g_3[0];
+assign P[7] = p_3[0];
+assign G[15] = g_4[0];
+assign P[15] = p_4[0];
+assign G[31] = g_5[0];
+assign P[31] = p_5[0];
+assign G[63] = g_6;
+assign P[63] = p_6;
+
+// C, s
+wire [64:0] C;
+generate
+    assign C[0] = cin;
+    for (i=0; i&lt;64; i=i+1) begin
+        assign C[i+1] = G[i] | P[i]&amp;C[0];
+    end
+endgenerate
+assign cout = C[64];
+assign s = C[63:0] ^ p;
+
+endmodule</span></span></span></code></pre></article>
+  <footer class="Footer">
+  <div>&copy; SnoopyBug 2024</div>
+  <div>&centerdot;</div>
+  <div>Powered by <a href="https://github.com/dragonman225/notablog" target="_blank"
+      rel="noopener noreferrer">Notablog</a>.
+  </div>
+</footer>
+
+</body>
+
+</html>
